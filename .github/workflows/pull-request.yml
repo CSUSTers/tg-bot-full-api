@@ -8,3 +8,10 @@ jobs:
   build:
     name: Build
     uses: ./.github/workflows/build.yml
+
+  build-image:
+    name: Build image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build image
+        run: docker build . --file Dockerfile"

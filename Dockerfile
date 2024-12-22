@@ -26,8 +26,6 @@ COPY --from=builder /telegram-bot-api/build/telegram-bot-api /
 
 COPY --from=builder2 /tg-bot-full-api/target/release/tg-bot-full-api /
 
-COPY entrypoint.sh /
-
 EXPOSE 3000
 
-ENTRYPOINT [ "/entrypoint.sh" ]
+ENTRYPOINT [ "/tg-bot-full-api" ]

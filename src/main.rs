@@ -5,21 +5,48 @@ use axum::{extract, Router};
 use axum_extra::body::AsyncReadBody;
 use std::borrow::Cow;
 use std::sync::Arc;
+use clap::Parser;
 use tokio::fs;
 
 #[derive(Clone, Debug)]
 struct State {
     work_dir: Arc<String>,
-    tg_api_url: Arc<String>,
+    tg_api_url: Arc<String>
 }
+
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    /// Working directory
+    #[arg(short, long, default_value = "/data")]
+    work_dir: String,
+}
+
+const TELEGRAM_LOCAL_MODE: &str = "TELEGRAM_LOCAL_MODE";
 
 #[tokio::main]
 async fn main() {
+    let args = Args::parse();
+
     let state = State {
-        work_dir: Arc::new("/data".to_string()),
+        work_dir: Arc::new(args.work_dir),
         tg_api_url: Arc::new("http://127.0.0.1:8081".to_string()),
     };
 
+    // create work_dir if not exists
+    fs::create_dir_all(std::path::Path::new(state.work_dir.as_str())).await.unwrap();
+
+    let mut cmd = tokio::process::Command::new("/telegram-bot-api");
+    if std::env::var(TELEGRAM_LOCAL_MODE).is_ok() {
+        cmd.arg("--local");
+    }
+
+    cmd.args(&["-t", "/tmp", "-d", state.work_dir.as_str()]);
+    let mut child = cmd.spawn().expect("start telegram-bot-api error");
+    tokio::spawn(async move {
+        std::process::exit(child.wait().await.unwrap().code().unwrap())
+    });
+    
     let app = Router::new()
         .route(
             "/file/*path",
@@ -74,7 +101,7 @@ async fn download(
     // TODO should we check bot token valid?
     
     // get local absolute path
-    let path = std::env::var("TELEGRAM_LOCAL_MODE")
+    let path = std::env::var(TELEGRAM_LOCAL_MODE)
         .map(|_| path.splitn(2, '/').nth(1).map(std::path::PathBuf::from))
         .unwrap_or_else(|_| path.strip_prefix("bot").map(|s| std::path::Path::new(state.work_dir.as_str()).join(s)));
     
