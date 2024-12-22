@@ -13,5 +13,7 @@ jobs:
     name: Build image
     runs-on: ubuntu-latest
     steps:
+      - name: Get source
+        uses: actions/checkout@v4
       - name: Build image
-        run: docker build . --file Dockerfile"
+        run: docker build . --file Dockerfile
