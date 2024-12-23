@@ -4,7 +4,7 @@ RUN apk add --no-cache cmake openssl-dev gcc g++ gperf zlib-dev git make linux-h
 
 RUN git clone --depth 1 --recursive https://github.com/tdlib/telegram-bot-api.git
 RUN CC=musl-cc CXX=musl-c++ cd telegram-bot-api && mkdir build && cd build && \
-    cmake -DCMAKE_BUILD_TYPE=Debug .. && make -j 8
+    cmake -DCMAKE_BUILD_TYPE=Debug .. && make -j $(nproc)
 
 
 FROM rust:1.83-alpine AS builder2
