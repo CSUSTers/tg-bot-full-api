@@ -1,0 +1,32 @@
+{
+    "image": "mcr.microsoft.com/devcontainers/rust",
+    "features": {
+      "ghcr.io/devcontainers/features/rust:1": {
+        "version": "1.83.0"
+      },
+      "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {
+        "plugins": "zsh-autosuggestions zsh-syntax-highlighting",
+        "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions https://github.com/zsh-users/zsh-syntax-highlighting.git"
+      },
+      "ghcr.io/devcontainers/features/sshd:1": {},
+      "ghcr.io/eitsupi/devcontainer-features/jq-likes:2.1.1": {}
+    },
+    "customizations": {
+      "vscode": {
+        "settings": {
+          "gitlens.showWelcomeOnInstall": false,
+          "gitlens.showWhatsNewAfterUpgrades": false,
+          "terminal.integrated.defaultProfile.linux": "zsh"
+        },
+        "extensions": [
+          "eamodio.gitlens",
+          "esbenp.prettier-vscode",
+          "ms-python.python",
+          "mutantdino.resourcemonitor",
+          "ms-vscode.makefile-tools",
+          "GitHub.copilot",
+          "GitHub.copilot-chat"
+        ]
+      }
+    }
+  }
