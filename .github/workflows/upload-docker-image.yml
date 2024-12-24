@@ -1,0 +1,27 @@
+name: Upload Docker Image
+
+on:
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: tg-bot-full-api
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+      - name: Upload image
+        run: |
+          docker image save $IMAGE_NAME | gzip > $IMAGE_NAME.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.IMAGE_NAME }}
+          path: ${{ env.IMAGE_NAME }}.tar.gz
+          compression-level: 0
