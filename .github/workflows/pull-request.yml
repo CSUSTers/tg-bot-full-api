@@ -18,6 +18,15 @@ jobs:
       - name: Get source
         uses: actions/checkout@v4
 
+      - name: Set up Metadata
+        id: meta
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          VERSION=pr_${{ github.event.number }}
+          echo "image=$IMAGE_ID" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
@@ -29,7 +38,7 @@ jobs:
         with:
           context: .
           push: false
-          tags: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:pr_${{ github.event.number }}
+          tags: ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.version }}
           labels: runnumber=${{ github.run_id }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

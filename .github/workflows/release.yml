@@ -22,7 +22,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
+
+      - name: Set up Metadata
+        id: meta
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          [ "$VERSION" == "master" ] && VERSION=latest
+          echo "image=$IMAGE_ID" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Login ghcr.io
         uses: docker/login-action@v3
         with:
@@ -44,7 +55,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.ref_name == 'master' && 'latest' || github.ref_name }}
+          tags: ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.version }}
           labels: runnumber=${{ github.run_id }}
           platforms: linux/amd64,linux/arm64
           cache-from: type=gha
