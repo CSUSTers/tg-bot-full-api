@@ -3,8 +3,10 @@ name: Pull Request
 on:
   pull_request:
 
-jobs:
+env:
+  IMAGE_NAME: tg-bot-full-api
 
+jobs:
   build:
     name: Build
     uses: ./.github/workflows/build.yml
@@ -15,5 +17,24 @@ jobs:
     steps:
       - name: Get source
         uses: actions/checkout@v4
-      - name: Build image
-        run: docker build . --file Dockerfile
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and Upload
+        id: docker_build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          tags: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:pr-${{ github.event.number }}
+          labels: runnumber=${{ github.run_id }}
+          builder: docker-container
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Upload image to Action Artifact
+        run: |
+          docker save ${{steps.docker_build.outputs.imageid}} | gzip > ${{env.IMAGE_NAME}}.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.IMAGE_NAME }}
+          path: ${{ env.IMAGE_NAME }}.tar.gz
