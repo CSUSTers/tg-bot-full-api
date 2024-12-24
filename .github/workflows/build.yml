@@ -1,6 +1,7 @@
 name: Build
 
 on:
+  push:
   workflow_call:
 
 env:
@@ -8,8 +9,8 @@ env:
 
 jobs:
 
-  build:
-    name: Build
+  check:
+    name: Check
     runs-on: ubuntu-latest
     steps:
       - name: Get source
