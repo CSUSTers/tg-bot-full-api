@@ -57,7 +57,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.version }}
           labels: runnumber=${{ github.run_id }}
-          platforms: linux/amd64,linux/arm64
+          provenance: false
+          platforms: linux/amd64
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
