@@ -7,14 +7,27 @@ on:
   push:
     branches:
       - master
-  workflow_dispatch: 
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Build image for'
+        required: true
+        default: 'linux/amd64'
+        type: choice
+        options:
+          - linux/amd64
+          - linux/arm64
+      tag:
+        description: 'Override image tag'
+        required: false
+        type: string
 
 env:
   IMAGE_NAME: tg-bot-full-api
 
 jobs:
 
-  push:
+  release:
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -28,10 +41,14 @@ jobs:
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          PLATFORM="linux/amd64"
+          [ -n "${{ github.event.inputs.platform }}" ] && PLATFORM="${{ github.event.inputs.platform }}"
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
           [ "$VERSION" == "master" ] && VERSION=latest
+          [ -n "${{ github.event.inputs.tag }}" ] && VERSION="${{ github.event.inputs.tag }}"
           echo "image=$IMAGE_ID" >> $GITHUB_OUTPUT
+          echo "platform=$PLATFORM" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Login ghcr.io
@@ -57,7 +74,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.version }}
           labels: runnumber=${{ github.run_id }}
-          platforms: linux/amd64,linux/arm64
+          provenance: false
+          platforms: ${{ steps.meta.outputs.platform }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

@@ -40,5 +40,6 @@ jobs:
           push: false
           tags: ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.version }}
           labels: runnumber=${{ github.run_id }}
+          provenance: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
