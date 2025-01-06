@@ -49,10 +49,10 @@ async fn main() {
     
     let app = Router::new()
         .route(
-            "/file/*path",
+            "/file/{*path}",
             get(download)
         )
-        .route("/*path", any(proxy))
+        .route("/{*path}", any(proxy))
         .with_state(state);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();

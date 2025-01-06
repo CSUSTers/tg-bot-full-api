@@ -1,6 +1,6 @@
 target
 tmp
-Cargo.lock
+# Cargo.lock
 Dockerfile
 README.md
 LICENSE
