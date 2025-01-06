@@ -10,15 +10,15 @@ on:
   workflow_dispatch:
     inputs:
       platform:
-        description: 'Build image for'
+        description: "Build image for"
         required: true
-        default: 'linux/amd64'
+        default: "linux/amd64"
         type: choice
         options:
           - linux/amd64
           - linux/arm64
       tag:
-        description: 'Override image tag'
+        description: "Override image tag"
         required: false
         type: string
 
@@ -26,7 +26,6 @@ env:
   IMAGE_NAME: tg-bot-full-api
 
 jobs:
-
   release:
     runs-on: ubuntu-latest
     permissions:
@@ -78,4 +77,3 @@ jobs:
           platforms: ${{ steps.meta.outputs.platform }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
