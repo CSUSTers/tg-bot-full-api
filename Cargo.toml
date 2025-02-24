@@ -7,7 +7,7 @@ edition = "2021"
 axum = { version = "0.8.2", features = ["macros", "multipart"] }
 axum-extra = { version = "0.10.0", features = ["async-read-body", "typed-header"] }
 axum-macros = "0.5.0"
-clap = { version = "4.5.30", features = ["derive", "env"] }
+clap = { version = "4.5.31", features = ["derive", "env"] }
 clap_derive = "4.5.18"
 reqwest = { version = "0.12.12", features = ["stream"], default-features = false }
 tokio = { version = "1.43.0", features = ["full"] }
