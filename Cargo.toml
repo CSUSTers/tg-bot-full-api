@@ -4,10 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-axum = { version = "0.8.1", features = ["macros", "multipart"] }
+axum = { version = "0.8.2", features = ["macros", "multipart"] }
 axum-extra = { version = "0.10.0", features = ["async-read-body", "typed-header"] }
 axum-macros = "0.5.0"
-clap = { version = "4.5.23", features = ["derive", "env"] }
+clap = { version = "4.5.31", features = ["derive", "env"] }
 clap_derive = "4.5.18"
 reqwest = { version = "0.12.12", features = ["stream"], default-features = false }
-tokio = { version = "1.42.0", features = ["full"] }
+tokio = { version = "1.44.0", features = ["full"] }
