@@ -16,7 +16,7 @@ RUN --mount=type=cache,target=/src/build cd src/build && \
     make -j $(nproc) && mv telegram-bot-api /
 
 
-FROM rust:1.83-alpine AS builder2
+FROM rust:1.86-alpine AS builder2
 
 RUN apk add --no-cache musl-dev libressl-dev
 
