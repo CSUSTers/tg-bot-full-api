@@ -6,7 +6,7 @@ edition = "2024"
 [dependencies]
 axum = { version = "0.8.3", features = ["macros", "multipart"] }
 axum-extra = { version = "0.10.1", features = ["async-read-body", "typed-header"] }
-clap = { version = "4.5.36", features = ["derive", "env"] }
+clap = { version = "4.5.37", features = ["derive", "env"] }
 clap_derive = "4.5.18"
 reqwest = { version = "0.12.15", features = ["stream"], default-features = false }
 tokio = { version = "1.44.2", features = ["full"] }
