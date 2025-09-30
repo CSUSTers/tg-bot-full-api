@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 axum = { version = "0.8.5", features = ["macros", "multipart"] }
-axum-extra = { version = "0.10.1", features = ["async-read-body", "typed-header"] }
+axum-extra = { version = "0.10.2", features = ["async-read-body", "typed-header"] }
 clap = { version = "4.5.48", features = ["derive", "env"] }
 clap_derive = "4.5.18"
 reqwest = { version = "0.12.23", features = ["stream"], default-features = false }
