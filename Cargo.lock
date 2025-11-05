@@ -128,6 +128,7 @@ dependencies = [
  "http-body-util",
  "mime",
  "pin-project-lite",
+ "rustversion",
  "tokio",
  "tokio-util",
  "tower-layer",
