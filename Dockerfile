@@ -1,10 +1,9 @@
-FROM alpine AS builder
+FROM alpine:3.22 AS builder
 
 RUN apk update && apk add --no-cache cmake gcc g++ gperf git make linux-headers musl-dev
 RUN apk add --no-cache libressl-dev zlib-static zlib-dev
 
 RUN git clone --depth 1 --shallow-submodules --single-branch --recursive https://github.com/tdlib/telegram-bot-api.git src
-RUN cd src && git submodule update --init --recursive
 RUN --mount=type=cache,target=/src/build cd src/build && \
     cmake -DCMAKE_BUILD_TYPE=Release \
     -DBUILD_SHARED_LIBS=OFF \
