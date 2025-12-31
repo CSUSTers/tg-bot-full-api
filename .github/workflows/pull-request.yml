@@ -32,6 +32,16 @@ jobs:
         with:
           driver: docker-container
 
+      - name: Inject tblib cache into Docker
+        uses: reproducible-containers/buildkit-cache-dance@v3.2.0
+        with:
+          cache-map: |
+            {
+              "tblib-build": "/src/build",
+              "cargo-cache": "/src/target"
+            }
+          skip-extraction: true
+
       - name: Build and Upload
         id: docker_build
         uses: docker/build-push-action@v6
@@ -41,5 +51,5 @@ jobs:
           tags: ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.version }}
           labels: runnumber=${{ github.run_id }}
           provenance: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=tblib-linux/amd64
+          cache-to: type=gha,mode=max,scope=tblib-linux/amd64
