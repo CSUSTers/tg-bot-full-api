@@ -5,7 +5,7 @@ RUN apk add --no-cache libressl-dev zlib-static zlib-dev
 
 RUN git clone --depth 1 --shallow-submodules --single-branch --recursive https://github.com/tdlib/telegram-bot-api.git src
 RUN cd src && git submodule update --init --recursive
-RUN --mount=type=cache,target=/src/build cd src/build && \
+RUN --mount=type=cache,id=tblib-build,target=/src/build cd src/build && \
     cmake -DCMAKE_BUILD_TYPE=Release \
     -DBUILD_SHARED_LIBS=OFF \
     -DOPENSSL_USE_STATIC_LIBS=ON \
@@ -23,7 +23,7 @@ RUN apk add --no-cache musl-dev libressl-dev
 
 WORKDIR /src
 COPY . .
-RUN --mount=type=cache,target=/src/target \
+RUN --mount=type=cache,id=cargo-cache,target=/src/target \
   cargo build --release && \
   cp target/release/tg-bot-full-api /tg-bot-full-api
 

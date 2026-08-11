@@ -32,6 +32,28 @@ jobs:
         with:
           driver: docker-container
 
+      # PR builds use linux/amd64 (ubuntu-latest default), so cache scope is hardcoded
+      - name: Cache tblib and cargo builds
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: cache-mount
+          key: buildkit-cache-linux/amd64-${{ hashFiles('Dockerfile') }}
+          restore-keys: |
+            buildkit-cache-linux/amd64-
+
+      - name: Inject tblib cache into Docker
+        uses: reproducible-containers/buildkit-cache-dance@v3.2.0
+        with:
+          cache-dir: cache-mount
+          cache-map: |
+            {
+              "tblib-build": "/src/build",
+              "cargo-cache": "/src/target"
+            }
+          # Always skip extraction to prevent PRs from overwriting the main cache
+          skip-extraction: true
+
       - name: Build and Upload
         id: docker_build
         uses: docker/build-push-action@v6
@@ -41,5 +63,5 @@ jobs:
           tags: ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.version }}
           labels: runnumber=${{ github.run_id }}
           provenance: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=tblib-linux/amd64
+          cache-to: type=gha,mode=max,scope=tblib-linux/amd64
